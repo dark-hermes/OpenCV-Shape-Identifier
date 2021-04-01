@@ -4,7 +4,7 @@ import json
 with open('shapes.json') as json_file:
     shapes = json.load(json_file)
 
-image = cv2.imread('../wp/house_wind')
+image = cv2.imread('test/someshapes.jpg')
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 cv2.imshow('Identifying Shapes', image)
