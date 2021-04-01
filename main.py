@@ -1,21 +1,32 @@
 import cv2
 import json
 
+# Read json files that contains shapes detail
 with open('shapes.json') as json_file:
     shapes = json.load(json_file)
 
+# Read a test image and convert that to gray scale
 image = cv2.imread('test/someshapes.jpg')
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
+# Show preview image
 cv2.imshow('Identifying Shapes', image)
 cv2.waitKey(0)
 
+# Find the edge using Canny algorithm
 edged = cv2.Canny(gray, 10, 50)
+# Find the binary threshold
 _, thresh = cv2.threshold(edged, 127, 255, cv2.THRESH_BINARY)
 
+# Find contours of the image with list retrieval
+# Chain the points continuously with CHAIN_APPROX_NONE
 contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
+# Iterate contours
 for contour in contours:
+
+    # Epsilon is accuracy parameter for maximum distance from
+    # to approximated contour
     epsilon = 0.01 * cv2.arcLength(contour, closed=True)
     approx = cv2.approxPolyDP(contour, epsilon, closed=True)
 
