@@ -3,7 +3,7 @@
     "0": "Triangle",
     "1": "Rectangle",
     "2": "Pentagon",
-    "3": "Heksagon"
+    "3": "Hexagon"
   },
   "n_points": {
     "0": 3,
