@@ -27,7 +27,7 @@ for contour in contours:
 
     # Epsilon is accuracy parameter for maximum distance from
     # to approximated contour
-    epsilon = 0.01 * cv2.arcLength(contour, closed=True) # Set accuracy to 1% to get detail contours
+    epsilon = 0.01 * cv2.arcLength(contour, closed=True)  # Set accuracy to 1% to get detail contours
     approx = cv2.approxPolyDP(contour, epsilon, closed=True)
 
     # Approximate the shape's number of angles
