@@ -55,14 +55,17 @@ for contour in contours:
             if abs(weight - height) <= 3:
                 name = "Square"
 
+    # Assign name to Polygon
     elif 7 <= n_corners < 15:
         cv2.drawContours(image, [contour], 0, (255, 0, 0), -1)
         name = "Polygon"
 
+    # Approximate the circle
     elif n_corners >= 15:
         cv2.drawContours(image, [contour], 0, (255, 0, 196), -1)
         name = "Circle"
 
+    # Put text in center of the shape
     cv2.putText(image, name, (cx - 50 - len(name), cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
     cv2.imshow('Identifying Shapes', image)
