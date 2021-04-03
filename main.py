@@ -15,6 +15,7 @@ cv2.waitKey(0)
 
 # Find the edge using Canny algorithm
 edged = cv2.Canny(gray, 10, 50)
+
 # Find the binary threshold
 _, thresh = cv2.threshold(edged, 127, 255, cv2.THRESH_BINARY)
 
@@ -22,7 +23,6 @@ _, thresh = cv2.threshold(edged, 127, 255, cv2.THRESH_BINARY)
 # Chain the points continuously with CHAIN_APPROX_NONE
 contours, hierarchy = cv2.findContours(thresh.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
-# Iterate contours
 for contour in contours:
 
     # Epsilon is accuracy parameter for maximum distance from
@@ -30,12 +30,12 @@ for contour in contours:
     epsilon = 0.01 * cv2.arcLength(contour, closed=True)  # Set accuracy to 1% to get detail contours
     approx = cv2.approxPolyDP(contour, epsilon, closed=True)
 
-    # Approximate the shape's number of angles
-    n_angles = len(approx)
+    # Approximate the shape's number of corners
+    n_corners = len(approx)
 
     # Try to get name of shapes from json
     try:
-        name = shapes["name"][str(n_angles - 3)]
+        name = shapes["name"][str(n_corners - 3)]
     except KeyError:
         name = ""
 
@@ -45,19 +45,21 @@ for contour in contours:
     cx = int(M['m10'] / M['m00'])
     cy = int(M['m01'] / M['m00'])
 
-    if n_angles in range(3, 7):
-        cv2.drawContours(image, [contour], 0, shapes["color"][str(n_angles - 3)], -1)
+    # Draw contours if shape data is in json
+    if n_corners in range(3, 7):
+        cv2.drawContours(image, [contour], 0, shapes["color"][str(n_corners - 3)], -1)
 
-        if n_angles == 4:
-            x, y, w, h = cv2.boundingRect(contour)
-            if abs(w - h) <= 3:
+        # Distinguish shapes with four corners into squares and rectangles
+        if n_corners == 4:
+            x, y, weight, height = cv2.boundingRect(contour)
+            if abs(weight - height) <= 3:
                 name = "Square"
 
-    elif 7 <= n_angles < 15:
+    elif 7 <= n_corners < 15:
         cv2.drawContours(image, [contour], 0, (255, 0, 0), -1)
         name = "Polygon"
 
-    elif n_angles >= 15:
+    elif n_corners >= 15:
         cv2.drawContours(image, [contour], 0, (255, 0, 196), -1)
         name = "Circle"
 
