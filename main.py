@@ -27,33 +27,37 @@ for contour in contours:
 
     # Epsilon is accuracy parameter for maximum distance from
     # to approximated contour
-    epsilon = 0.01 * cv2.arcLength(contour, closed=True)
+    epsilon = 0.01 * cv2.arcLength(contour, closed=True) # Set accuracy to 1% to get detail contours
     approx = cv2.approxPolyDP(contour, epsilon, closed=True)
 
-    n_points = len(approx)
+    # Approximate the shape's number of angles
+    n_angles = len(approx)
 
+    # Try to get name of shapes from json
     try:
-        name = shapes["name"][str(n_points - 3)]
+        name = shapes["name"][str(n_angles - 3)]
     except KeyError:
         name = ""
 
+    # Get the centroid of the X and Y axes
+    # https://en.wikipedia.org/wiki/Centroid
     M = cv2.moments(contour)
     cx = int(M['m10'] / M['m00'])
     cy = int(M['m01'] / M['m00'])
 
-    if n_points in range(3, 7):
-        cv2.drawContours(image, [contour], 0, shapes["color"][str(n_points - 3)], -1)
+    if n_angles in range(3, 7):
+        cv2.drawContours(image, [contour], 0, shapes["color"][str(n_angles - 3)], -1)
 
-        if n_points == 4:
+        if n_angles == 4:
             x, y, w, h = cv2.boundingRect(contour)
             if abs(w - h) <= 3:
                 name = "Square"
 
-    elif 7 <= n_points < 15:
+    elif 7 <= n_angles < 15:
         cv2.drawContours(image, [contour], 0, (255, 0, 0), -1)
         name = "Polygon"
 
-    elif n_points >= 15:
+    elif n_angles >= 15:
         cv2.drawContours(image, [contour], 0, (255, 0, 196), -1)
         name = "Circle"
 
